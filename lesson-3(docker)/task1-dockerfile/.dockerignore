@@ -1,0 +1,25 @@
+# .dockerignore
+.git/
+.gitignore
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+.DS_Store
+.vscode/
+.idea/
+*.log
+*.tmp
+*.temp
+node_modules/
+*.md
+LICENSE
+compose.yaml
+compose.yml
+docker-compose.yml
+docker-compose.yaml
+proxy.yaml
+README.md
