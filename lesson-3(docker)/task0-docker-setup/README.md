@@ -1,5 +1,4 @@
-mkdir -p /projects/devops-homework-5/task0-docker-check
-cat > /projects/devops-homework-5/task0-docker-check/README.md << 'EOF'
+
 # ЗАДАНИЕ 0: Проверка окружения Docker
 
 ## Цель задания
