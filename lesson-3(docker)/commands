@@ -1,0 +1,34 @@
+
+```bash
+apt install git curl
+curl -fsSL get.docker.com -o get-docker.sh
+chmod +x get-docker.sh
+./get-docker.sh
+
+docker pull hello-world
+docker images
+docker run hello-world
+docker run -it ubuntu bash
+
+docker run -d nginx
+docker ps
+docker exec -it objective_yalow nginx -v
+docker stop
+docker ps
+docker ps -a
+docker rm 
+docker rmi nginx
+docker images
+
+docker system prune
+
+docker logs
+
+docker pull ubuntu:20.04
+
+docker rename
+
+docker network create
+
+docker run -d --name=container-name --net=network-name
+```
