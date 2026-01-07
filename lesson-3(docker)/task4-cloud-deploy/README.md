@@ -33,7 +33,7 @@ docker ps
 
 ```
 
-[Работа контейнеров в облаке](./images/Скриншот-1_Работа%20контейнеров%20в%20облаке.png)
+[Работа контейнеров в облаке](./images/screenshot_1.png)
 
 
 ---
@@ -44,7 +44,7 @@ docker ps
 
 * **Ссылка для проверки:** [check-host.net](http://158.160.30.114:8090)
 
-[Проверка доступности (Traffic Chain)](./images/Скриншот-2_%20Проверка%20через%20check-host.png)
+[Проверка доступности (Traffic Chain)](./images/screenshot_2.png)
 ---
 
 ### 3. Анализ образа через Dive
@@ -58,7 +58,7 @@ docker run --rm -it \
 
 ```
 
-[Анализ образа через Dive](./images/Скриншот-3_Анализ%20образа%20через%20Dive.png)
+[Анализ образа через Dive](./images/screenshot_3.png)
 
 ---
 
@@ -71,7 +71,7 @@ docker exec -it mysql-db mysql -uroot -pstrong_root_password_123 -e "use netolog
 
 ```
 
-[Валидация базы данных (SQL)](./images/Скриншот-4_Результат%20SQL-запроса.png)
+[Валидация базы данных (SQL)](./images/screenshot_4.png)
 
 ---
 
@@ -85,6 +85,6 @@ docker --context yc-cloud ps
 
 ```
 
-[Удаленный Docker Context](./images/Скриншот-5_Удаленный%20контекст%20(Remote%20SSH%20Context).png)
+[Удаленный Docker Context](./images/screenshot_5.png)
 
 ---
