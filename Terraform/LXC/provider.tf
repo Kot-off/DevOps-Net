@@ -3,12 +3,16 @@ terraform {
 
   required_providers {
     proxmox = {
-      source  = "bpg/proxmox"
-      #version = "0.66.1"
+      source = "bpg/proxmox"
+    }
+    docker = {
+      source = "kreuzwerker/docker"
+    }
+    random = {
+      source = "hashicorp/random"
     }
     null = {
-      source  = "hashicorp/null"
-      version = ">= 3.0.0"
+      source = "hashicorp/null"
     }
   }
 }

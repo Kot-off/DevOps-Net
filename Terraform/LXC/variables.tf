@@ -28,3 +28,13 @@ variable "netology_master_password" {
   sensitive = true 
 }
 
+# Пароли для MySQL (Задание 2*)
+variable "mysql_root_password" {
+  type      = string
+  sensitive = true
+}
+
+variable "mysql_user_password" {
+  type      = string
+  sensitive = true
+}
