@@ -5,7 +5,7 @@
 
 **1. Установка Terraform**
 
-* Версия Terraform: `1.14.3`
+* Версия Terraform: `1.14.3` <br>
 ![Версия Terraform](./images/1.png)
 
 **2. Секретные данные и .gitignore**
