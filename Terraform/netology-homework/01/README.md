@@ -1,5 +1,5 @@
 
-# Решение домашнего задания к занятию «Введение в Terraform»
+# «Введение в Terraform»
 
 ### Задание 1
 
@@ -59,6 +59,8 @@
 **8. Почему docker-образ nginx:latest не был удален?**
 Образ остался в локальном хранилище Docker, так как в коде ресурса `docker_image` был установлен параметр:
 `keep_locally = true`
+
+![](./images/8.png)
 
 **Обоснование из документации (провайдер Docker):**
 [Документация](https://registry.terraform.io/providers/kreuzwerker/docker/latest/docs/resources/image.html)
