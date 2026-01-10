@@ -1,0 +1,29 @@
+# Игнорируем рабочую директорию со скачанными модулями и провайдерами
+.terraform/
+
+# Игнорируем файлы состояния
+*.tfstate
+*.tfstate.*
+
+# Игнорируем логи крашей
+crash.log
+crash.*.log
+
+# Игнорируем локальные переопределения
+*.override.tf
+*.override.tf.json
+*_override.tf
+*_override.tf.json
+
+# Игнорируем файлы с переменными
+*.tfvars
+*.tfvars.json
+
+
+# Игнорируем конкретные секретные файлы
+personal.auto.tfvars
+authorized_key.json
+
+# Игнорируем локальные файлы конфигурации CLI
+.terraformrc
+terraform.rc

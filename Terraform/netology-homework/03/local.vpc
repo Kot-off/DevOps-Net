@@ -1,0 +1,5 @@
+{ 
+  network_id   = local.vpc.network_id, 
+  subnet_ids   = concat(slice(local.vpc.subnet_ids, 0, 2), slice(local.vpc.subnet_ids, 3, 4)),
+  subnet_zones = concat(slice(local.vpc.subnet_zones, 0, 2), slice(local.vpc.subnet_zones, 3, 4))
+}
