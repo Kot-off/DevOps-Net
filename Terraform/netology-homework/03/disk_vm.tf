@@ -5,11 +5,13 @@ resource "yandex_compute_disk" "storage_disks" {
 }
 
 resource "yandex_compute_instance" "storage" {
-  name = "storage"
+  name        = "storage"
+  platform_id = var.vms_default_hw.platform_id
+
   resources {
-    cores = 2
-    memory = 1
-    core_fraction = 5 
+    cores         = var.vms_default_hw.cores
+    memory        = var.vms_default_hw.memory
+    core_fraction = var.vms_default_hw.core_fraction
   }
 
   allow_stopping_for_update = true
@@ -20,7 +22,6 @@ resource "yandex_compute_instance" "storage" {
     }
   }
 
-  # Динамическое подключение дисков
   dynamic "secondary_disk" {
     for_each = yandex_compute_disk.storage_disks[*].id
     content {
@@ -32,9 +33,11 @@ resource "yandex_compute_instance" "storage" {
     subnet_id = yandex_vpc_subnet.develop.id
     nat       = true
   }
+
   metadata = {
     ssh-keys = "ubuntu:${local.ssh_key}"
   }
+
   scheduling_policy { 
     preemptible = true 
   }

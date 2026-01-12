@@ -3,11 +3,12 @@ resource "yandex_compute_instance" "web" {
   name  = "web-${count.index + 1}"
 
   allow_stopping_for_update = true
+  platform_id               = var.vms_default_hw.platform_id
 
   resources {
-    cores         = 2
-    memory        = 1
-    core_fraction = 5
+    cores         = var.vms_default_hw.cores
+    memory        = var.vms_default_hw.memory
+    core_fraction = var.vms_default_hw.core_fraction
   }
 
   boot_disk {
@@ -30,6 +31,5 @@ resource "yandex_compute_instance" "web" {
     preemptible = true 
   }
 
-  # Задание 2.4: Ждем БД
   depends_on = [yandex_compute_instance.db]
 }

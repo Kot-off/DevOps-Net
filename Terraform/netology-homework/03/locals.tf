@@ -1,4 +1,3 @@
 locals {
-  # Считываем публичный ключ из файла (убедись, что путь верный или создай ключ)
-  ssh_key = file("~/.ssh/id_ed25519.pub") 
+  ssh_key = file(var.vms_ssh_public_key_path)
 }
