@@ -1,8 +1,8 @@
+# --- 1. Сети ---
 resource "yandex_vpc_network" "develop" {
   name = var.vpc_name
 }
 
-# Подсеть для Web (Зона A)
 resource "yandex_vpc_subnet" "develop" {
   name           = "develop-ru-central1-a"
   zone           = var.default_zone
@@ -10,20 +10,22 @@ resource "yandex_vpc_subnet" "develop" {
   v4_cidr_blocks = var.default_cidr
 }
 
-# Подсеть для DB (Зона B) - Задание 3
+# Подсеть для DB (Зона B)
 resource "yandex_vpc_subnet" "db" {
   name           = "develop-ru-central1-b"
-  zone           = var.vm_db_zone
+  zone           = "ru-central1-b"
   network_id     = yandex_vpc_network.develop.id
   v4_cidr_blocks = ["10.0.2.0/24"]
 }
 
-# Получаем ID
+# --- 2. Данные (Образ) ---
 data "yandex_compute_image" "ubuntu" {
   family = "ubuntu-2004-lts"
 }
 
-# ВМ Web (Задание 1, 2, 5, 6)
+# --- 3. Виртуальные машины ---
+
+# ВМ Web
 resource "yandex_compute_instance" "web" {
   name        = local.vm_web_name
   platform_id = "standard-v1"
@@ -41,10 +43,6 @@ resource "yandex_compute_instance" "web" {
     }
   }
 
-  scheduling_policy {
-    preemptible = true
-  }
-
   network_interface {
     subnet_id = yandex_vpc_subnet.develop.id
     nat       = true
@@ -53,11 +51,11 @@ resource "yandex_compute_instance" "web" {
   metadata = var.vms_metadata
 }
 
-# ВМ DB (Задание 3, 5, 6)
+# ВМ DB
 resource "yandex_compute_instance" "db" {
   name        = local.vm_db_name
   platform_id = "standard-v1"
-  zone        = var.vm_db_zone
+  zone        = "ru-central1-b"
 
   resources {
     cores         = var.vms_resources.db.cores
@@ -69,10 +67,6 @@ resource "yandex_compute_instance" "db" {
     initialize_params {
       image_id = data.yandex_compute_image.ubuntu.image_id
     }
-  }
-
-  scheduling_policy {
-    preemptible = true
   }
 
   network_interface {
