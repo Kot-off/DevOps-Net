@@ -3,3 +3,14 @@
   scm: git
   version: "1.13"
   name: clickhouse
+
+# Добавь свои роли (замени USERNAME на свой логин GitHub)
+- src: https://github.com/ВАШ_ЛОГИН/vector-role.git
+  scm: git
+  version: "1.0.0"
+  name: vector-role
+
+- src: https://github.com/ВАШ_ЛОГИН/lighthouse-role.git
+  scm: git
+  version: "1.0.0"
+  name: lighthouse-role
