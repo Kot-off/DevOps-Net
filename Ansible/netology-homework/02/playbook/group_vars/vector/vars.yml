@@ -1,0 +1,6 @@
+---
+vector_version: "0.34.1"
+vector_url: "https://packages.timber.io/vector/{{ vector_version }}/vector-{{ vector_version }}-x86_64-unknown-linux-musl.tar.gz"
+vector_dir: "/opt/vector"
+vector_config_dir: "/etc/vector"
+vector_data_dir: "/var/lib/vector"
