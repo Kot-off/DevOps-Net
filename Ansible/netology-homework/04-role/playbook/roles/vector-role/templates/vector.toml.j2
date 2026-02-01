@@ -1,0 +1,15 @@
+[api]
+enabled = true
+address = "127.0.0.1:8686"
+
+[sources.dummy_logs]
+type = "demo_logs"
+format = "json"
+
+[sinks.console]
+type = "console"
+inputs = ["dummy_logs"]
+target = "stdout"
+encoding.codec = "json"
+
+data_dir = "{{ vector_data_dir }}"

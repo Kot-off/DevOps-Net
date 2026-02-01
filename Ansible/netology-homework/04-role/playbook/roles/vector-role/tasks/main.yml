@@ -1,0 +1,34 @@
+---
+- name: Create directories
+  become: true
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    mode: '0755'
+  loop:
+    - "{{ vector_config_dir }}"
+    - "{{ vector_data_dir }}"
+    - "{{ vector_dir }}"
+
+- name: Download Vector archive
+  ansible.builtin.get_url:
+    url: "{{ vector_url }}"
+    dest: "/tmp/vector.tar.gz"
+    mode: '0644'
+
+- name: Extract Vector
+  become: true
+  ansible.builtin.unarchive:
+    src: "/tmp/vector.tar.gz"
+    dest: "{{ vector_dir }}"
+    extra_opts: [--strip-components=2]
+    remote_src: true
+    creates: "{{ vector_dir }}/bin/vector"
+
+- name: Apply Vector template
+  become: true
+  ansible.builtin.template:
+    src: vector.toml.j2
+    dest: "{{ vector_config_dir }}/vector.toml"
+    mode: '0644'
+  notify: Restart Vector
