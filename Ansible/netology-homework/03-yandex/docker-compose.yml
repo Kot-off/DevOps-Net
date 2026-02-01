@@ -1,0 +1,6 @@
+version: '3'
+services:
+  fedora:
+    image: pycontribs/centos:7  # <--- Было fedora:latest
+    container_name: fedora
+    # остальное без изменений
