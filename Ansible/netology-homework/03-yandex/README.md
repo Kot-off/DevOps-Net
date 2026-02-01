@@ -16,9 +16,8 @@
 ansible-playbook -i inventory/prod.yml site.yml --diff
 ```
 
+## Скриншоты
+![1](./img/1.png)
+
 ---
 
-
-## Скриншоты
-
-![1](./img/1.png)
