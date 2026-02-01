@@ -1,6 +1,8 @@
 version: '3'
 services:
-  fedora:
-    image: pycontribs/centos:7  # <--- Было fedora:latest
-    container_name: fedora
-    # остальное без изменений
+    fedora:
+      image: pycontribs/fedora:latest
+      container_name: fedora
+      ports:        
+        - "80:80"       
+      command: sleep infinity
