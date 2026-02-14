@@ -1,0 +1,5 @@
+---
+- name: Create file using collection module
+  my_own_namespace.my_own_collection.my_own_module:
+    path: "{{ my_file_path }}"
+    content: "{{ my_file_content }}"

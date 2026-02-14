@@ -1,0 +1,13 @@
+---
+- name: Test my own module
+  hosts: localhost
+  tasks:
+    - name: Create file using my_own_module
+      my_own_module:
+        path: "/tmp/test_ansible_module.txt"
+        content: "Hello Netology!"
+      register: module_result
+
+    - name: Show result
+      debug:
+        var: module_result
