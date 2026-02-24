@@ -1,0 +1,43 @@
+version: '3.8'
+
+services:
+  teamcity-server:
+    image: jetbrains/teamcity-server:latest
+    container_name: teamcity-server
+    dns: 8.8.8.8
+    ports:
+      - "8111:8111"
+    volumes:
+      - ./data/teamcity_server:/data/teamcity_server/datadir
+      - ./logs/teamcity_server:/opt/teamcity/logs
+    networks:
+      - teamcity-network
+    # Лимиты убраны или занижены для локальной разработки
+
+  teamcity-agent:
+    image: jetbrains/teamcity-agent:latest
+    container_name: teamcity-agent
+    dns: 8.8.8.8
+    depends_on:
+      - teamcity-server
+    environment:
+      - SERVER_URL=http://teamcity-server:8111
+    volumes:
+      - ./data/teamcity_agent:/data/teamcity_agent/conf
+      - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      - teamcity-network
+
+  nexus:
+    image: sonatype/nexus3:latest
+    container_name: nexus
+    ports:
+      - "8081:8081"
+    volumes:
+      - ./data/nexus-data:/nexus-data
+    networks:
+      - teamcity-network
+
+networks:
+  teamcity-network:
+    driver: bridge
