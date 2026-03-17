@@ -1,0 +1,42 @@
+version: '3.8'
+services:
+  influxdb:
+    image: influxdb:1.8
+    container_name: influxdb
+    environment:
+      - INFLUXDB_HTTP_AUTH_ENABLED=false
+    ports:
+      - "8086:8086"
+    volumes:
+      - ./data/influxdb:/var/lib/influxdb:Z
+
+  telegraf:
+    image: telegraf:latest # Берем последнюю версию
+    container_name: telegraf
+    user: root
+    privileged: true
+    environment:
+      - DOCKER_API_VERSION=1.44 # Сообщаем Docker-клиенту правильную версию
+    volumes:
+      - ./telegraf.conf:/etc/telegraf/telegraf.conf:ro
+      - /var/run/docker.sock:/var/run/docker.sock:Z
+    depends_on:
+      - influxdb
+
+  chronograf:
+    image: chronograf:1.9
+    container_name: chronograf
+    ports:
+      - "8888:8888"
+    depends_on:
+      - influxdb
+
+  kapacitor:
+    image: kapacitor:1.6
+    container_name: kapacitor
+    environment:
+      - KAPACITOR_INFLUXDB_0_URLS_0=http://influxdb:8086
+    ports:
+      - "9092:9092"
+    depends_on:
+      - influxdb
