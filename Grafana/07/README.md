@@ -50,10 +50,6 @@
 2.  Запросы на `/v1/user`, `/v1/upload` и `/images/` требуют авторизации. Nginx отправляет подзапрос в `security` для валидации JWT-токена.
 3.  При успешной валидации (HTTP 200) запрос следует в целевой сервис.
 
-**Конфигурационные файлы:**
-
-  * [docker-compose.yml](https://www.google.com/search?q=./docker-compose.yml)
-  * [nginx.conf](https://www.google.com/search?q=./gateway/nginx.conf)
 
 ### Проверка работоспособности:
 
