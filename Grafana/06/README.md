@@ -41,7 +41,7 @@
 Стек Vector + ElasticSearch + Kibana развернут через Docker Compose. 
 
 **Результат выполнения (Kibana Discover):**
-![Kibana UI](./images/kibana.png)
+![Kibana UI](./images/1.png)
 
 ---
 
@@ -50,4 +50,4 @@
 Настроен сбор метрик с сервисов API Gateway. В Grafana построен Dashboard распределения запросов.
 
 **Результат выполнения (Grafana Dashboard):**
-![Grafana Dashboard](./images/grafana.png)
+![Grafana Dashboard](./images/2.png)
