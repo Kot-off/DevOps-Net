@@ -44,4 +44,24 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           port: ${{ secrets.SSH_PORT }}
           script: |
+            echo "=== 1. Проверяем состояние кластера ==="
             kubectl get nodes
+
+            echo "=== 2. Ищем директорию с манифестами ==="
+            pwd
+            ls -la
+
+            if [ -d "devops-diplom-yandexcloud" ]; then
+              cd devops-diplom-yandexcloud
+            fi
+
+            echo "=== 3. Проверяем наличие YAML файлов ==="
+            find . -maxdepth 3 -name "*.yaml" -o -name "*.yml"
+
+            echo "=== 4. Применяем деплой (если манифесты есть) ==="
+            if [ -d "k8s" ]; then
+              kubectl apply -f k8s/
+            fi
+            
+            echo "=== 5. Проверяем запущенные поды ==="
+            kubectl get pods,svc -o wide
