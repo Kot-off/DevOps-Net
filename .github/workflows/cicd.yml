@@ -63,7 +63,7 @@ jobs:
 
           rm key.json
 
- deploy:
+  deploy:
     needs: start-vm
     runs-on: ubuntu-latest
     steps:
