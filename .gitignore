@@ -1,0 +1,11 @@
+# Terraform
+**/.terraform/
+*.tfstate
+*.tfstate.*
+*.tfvars
+!personal.auto.tfvars.copy
+
+# System & Keys
+*.key
+*.pem
+id_rsa
