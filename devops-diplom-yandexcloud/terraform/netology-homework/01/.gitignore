@@ -1,6 +1,0 @@
-.terraform/
-*.tfstate
-*.tfstate.*
-.terraform.lock.hcl
-# Файл для секретов
-personal.auto.tfvars
