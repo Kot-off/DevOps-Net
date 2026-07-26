@@ -1,0 +1,6 @@
+**/.terraform/
+*.tfstate
+*.tfstate.*
+*.tfvars
+!personal.auto.tfvars.copy
+.terraform.lock.hcl

@@ -1,0 +1,4 @@
+---
+lighthouse_vcs: "https://github.com/VKCOM/lighthouse.git"
+lighthouse_location_dir: "/var/www/lighthouse"
+nginx_conf_dir: "/etc/nginx/conf.d"

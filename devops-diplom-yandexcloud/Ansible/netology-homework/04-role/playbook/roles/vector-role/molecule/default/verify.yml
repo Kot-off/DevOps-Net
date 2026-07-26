@@ -1,0 +1,25 @@
+---
+- name: Verify
+  hosts: all
+  gather_facts: false
+  tasks:
+    - name: Get Vector version
+      ansible.builtin.command: vector --version
+      register: vector_version
+      changed_when: false
+
+    - name: Assert Vector is installed
+      ansible.builtin.assert:
+        that:
+          - "'vector' in vector_version.stdout"
+        fail_msg: "Vector binary is not responding"
+
+    - name: Check if config file exists
+      ansible.builtin.stat:
+        path: /etc/vector/vector.yaml
+      register: vector_cfg
+
+    - name: Assert config exists
+      ansible.builtin.assert:
+        that:
+          - vector_cfg.stat.exists

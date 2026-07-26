@@ -1,0 +1,10 @@
+---
+- name: Converge
+  hosts: all
+  gather_facts: false 
+  vars:
+    ansible_connection: docker 
+  tasks:
+    - name: "Include vector-role"
+      include_role:
+        name: "vector-role"

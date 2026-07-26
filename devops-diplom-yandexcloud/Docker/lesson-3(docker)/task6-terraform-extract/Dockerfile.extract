@@ -1,0 +1,8 @@
+FROM hashicorp/terraform:latest AS source
+
+FROM alpine:latest
+# Копируем бинарник из исходного образа
+COPY --from=source /bin/terraform /extracted-terraform
+
+# Команда для проверки
+CMD ["sh", "-c", "ls -la /extracted-terraform && /extracted-terraform --version"]

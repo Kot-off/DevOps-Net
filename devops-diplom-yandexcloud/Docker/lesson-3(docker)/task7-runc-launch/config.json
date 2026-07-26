@@ -1,0 +1,21 @@
+{
+    "ociVersion": "1.0.2-dev",
+    "process": {
+        "terminal": false,
+        "user": {"uid": 0, "gid": 0},
+        "args": ["echo", "Hello from runC!"],
+        "env": ["PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"],
+        "cwd": "/"
+    },
+    "root": {"path": "rootfs"},
+    "hostname": "simple-test",
+    "linux": {
+        "namespaces": [
+            {"type": "pid"},
+            {"type": "network"},
+            {"type": "ipc"},
+            {"type": "uts"},
+            {"type": "mount"}
+        ]
+    }
+}

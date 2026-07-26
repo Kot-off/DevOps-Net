@@ -1,0 +1,66 @@
+version: '3.8'
+
+networks:
+  monitoring-network:
+    driver: bridge
+
+services:
+  # --- ЛОГИ (Задание 4) ---
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.10.2
+    container_name: elasticsearch
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    networks:
+      - monitoring-network
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:8.10.2
+    container_name: kibana
+    ports:
+      - "8081:5601"
+    environment:
+      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+    networks:
+      - monitoring-network
+    depends_on:
+      - elasticsearch
+
+  vector:
+    image: timberio/vector:0.33.0-distroless-libc
+    container_name: vector
+    volumes:
+      - ./vector.yaml:/etc/vector/vector.yaml:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    networks:
+      - monitoring-network
+    depends_on:
+      - elasticsearch
+
+  # --- МОНИТОРИНГ (Задание 5) ---
+  prometheus:
+    image: prom/prometheus:v2.47.0
+    container_name: prometheus
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml:ro
+    ports:
+      - "9090:9090"
+    extra_hosts:
+      - "security:host-gateway"
+      - "uploader:host-gateway"
+      - "storage:host-gateway"
+    networks:
+      - monitoring-network
+
+  grafana:
+    image: grafana/grafana:10.1.2
+    container_name: grafana
+    ports:
+      - "8082:3000"
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=qwerty123456
+    networks:
+      - monitoring-network

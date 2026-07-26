@@ -1,0 +1,68 @@
+version: '3.8'
+services:
+  es-hot:
+    image: elasticsearch:8.11.0
+    container_name: es-hot
+    environment:
+      - node.name=es-hot
+      - cluster.name=elk-cluster
+      - cluster.initial_master_nodes=es-hot
+      - node.roles=master,data_hot,data_content,ingest
+      - ES_JAVA_OPTS=-Xms512m -Xmx512m
+      - xpack.security.enabled=false
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    ports:
+      - 9200:9200
+
+  es-warm:
+    image: elasticsearch:8.11.0
+    container_name: es-warm
+    environment:
+      - node.name=es-warm
+      - cluster.name=elk-cluster
+      - discovery.seed_hosts=es-hot
+      - node.roles=data_warm
+      - ES_JAVA_OPTS=-Xms512m -Xmx512m
+      - xpack.security.enabled=false
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+
+  kibana:
+    image: kibana:8.11.0
+    container_name: kibana
+    ports:
+      - 5601:5601
+    environment:
+      - ELASTICSEARCH_HOSTS=http://es-hot:9200
+    depends_on:
+      - es-hot
+
+  logstash:
+    image: logstash:8.11.0
+    container_name: logstash
+    environment:
+      - xpack.monitoring.elasticsearch.hosts=["http://es-hot:9200"]
+    volumes:
+      - ./logstash.conf:/usr/share/logstash/pipeline/logstash.conf:ro
+    ports:
+      - 5044:5044
+      - 5045:5045
+    depends_on:
+      - es-hot
+
+  filebeat:
+    image: elastic/filebeat:8.11.0
+    container_name: filebeat
+    user: root
+    command: ["--strict.perms=false"] 
+    volumes:
+      - ./filebeat.yml:/usr/share/filebeat/filebeat.yml:ro
+      - /var/lib/docker/containers:/var/lib/docker/containers:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    depends_on:
+      - logstash

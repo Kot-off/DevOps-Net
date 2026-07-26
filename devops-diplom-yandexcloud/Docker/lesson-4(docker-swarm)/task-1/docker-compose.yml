@@ -1,0 +1,60 @@
+services:
+  manager:
+    image: docker:dind
+    container_name: swarm-manager
+    privileged: true
+    networks:
+      - swarm-network
+    ports:
+      - "2377:2377"
+    command: >
+      --storage-driver=overlay2
+      --host=tcp://0.0.0.0:2375
+      --host=unix:///var/run/docker.sock
+    volumes:
+      - manager-data:/var/lib/docker
+    environment:
+      - DOCKER_TLS_CERTDIR=
+
+  worker1:
+    image: docker:dind
+    container_name: swarm-worker1
+    privileged: true
+    networks:
+      - swarm-network
+    command: >
+      --storage-driver=overlay2
+      --host=tcp://0.0.0.0:2375
+      --host=unix:///var/run/docker.sock
+    volumes:
+      - worker1-data:/var/lib/docker
+    environment:
+      - DOCKER_TLS_CERTDIR=
+    depends_on:
+      - manager
+
+  worker2:
+    image: docker:dind
+    container_name: swarm-worker2
+    privileged: true
+    networks:
+      - swarm-network
+    command: >
+      --storage-driver=overlay2
+      --host=tcp://0.0.0.0:2375
+      --host=unix:///var/run/docker.sock
+    volumes:
+      - worker2-data:/var/lib/docker
+    environment:
+      - DOCKER_TLS_CERTDIR=
+    depends_on:
+      - manager
+
+networks:
+  swarm-network:
+    driver: bridge
+
+volumes:
+  manager-data:
+  worker1-data:
+  worker2-data:

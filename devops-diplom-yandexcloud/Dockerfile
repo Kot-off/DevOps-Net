@@ -1,0 +1,3 @@
+FROM nginx:alpine
+RUN echo "<h1>Diploma App - Anton</h1>" > /usr/share/nginx/html/index.html
+EXPOSE 80

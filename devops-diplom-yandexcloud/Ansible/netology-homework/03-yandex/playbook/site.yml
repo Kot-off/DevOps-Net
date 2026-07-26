@@ -1,0 +1,45 @@
+# ... (тут были play для clickhouse и vector)
+
+- name: Install Lighthouse
+  hosts: lighthouse
+  handlers:
+    - name: Restart Nginx
+      become: true
+      ansible.builtin.service:
+        name: nginx
+        state: restarted
+  vars_files:
+    - group_vars/lighthouse/vars.yml
+  
+  tasks:
+    - name: Install Git and Nginx
+      become: true
+      ansible.builtin.yum:
+        name:
+          - git
+          - nginx
+        state: present
+
+    - name: Enable Nginx (startup)
+      become: true
+      ansible.builtin.service:
+        name: nginx
+        state: started
+        enabled: true
+      ignore_errors: true # Игнорируем в Docker, если нет systemd
+
+    - name: Clone Lighthouse repo
+      become: true
+      ansible.builtin.git:
+        repo: "{{ lighthouse_vcs }}"
+        dest: "{{ lighthouse_location_dir }}"
+        version: master
+        force: true # Обновить, если уже существует
+
+    - name: Apply Nginx config
+      become: true
+      ansible.builtin.template:
+        src: templates/nginx.conf.j2
+        dest: "{{ nginx_conf_dir }}/lighthouse.conf"
+        mode: '0644'
+      notify: Restart Nginx

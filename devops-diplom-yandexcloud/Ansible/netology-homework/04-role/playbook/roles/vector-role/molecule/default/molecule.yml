@@ -1,0 +1,21 @@
+---
+dependency:
+  name: galaxy
+driver:
+  name: docker
+platforms:
+  - name: ubuntu
+    image: docker.io/pycontribs/ubuntu:latest
+    pre_build_image: true
+  - name: centos7
+    image: docker.io/pycontribs/centos:7
+    pre_build_image: true
+provisioner:
+  name: ansible
+  inventory:
+    host_vars:
+      all:
+        ansible_connection: docker
+  config_options:
+    defaults:
+      interpreter_python: auto_silent
