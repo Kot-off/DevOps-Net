@@ -1,8 +1,0 @@
-version: '3'
-services:
-    fedora:
-      image: pycontribs/fedora:latest
-      container_name: fedora
-      ports:        
-        - "80:80"       
-      command: sleep infinity
