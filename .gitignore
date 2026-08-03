@@ -7,5 +7,6 @@
 
 # System & Keys
 *.key
+key.json
 *.pem
 id_rsa

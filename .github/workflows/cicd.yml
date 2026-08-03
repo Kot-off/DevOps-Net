@@ -75,40 +75,7 @@ jobs:
           port: ${{ secrets.SSH_PORT }}
           script_stop: true
           script: |
-            echo 'apiVersion: apps/v1' > app.yml
-            echo 'kind: Deployment' >> app.yml
-            echo 'metadata:' >> app.yml
-            echo '  name: diploma-app' >> app.yml
-            echo '  labels:' >> app.yml
-            echo '    app: diploma-app' >> app.yml
-            echo 'spec:' >> app.yml
-            echo '  replicas: 2' >> app.yml
-            echo '  selector:' >> app.yml
-            echo '    matchLabels:' >> app.yml
-            echo '      app: diploma-app' >> app.yml
-            echo '  template:' >> app.yml
-            echo '    metadata:' >> app.yml
-            echo '      labels:' >> app.yml
-            echo '        app: diploma-app' >> app.yml
-            echo '    spec:' >> app.yml
-            echo '      containers:' >> app.yml
-            echo '      - name: web' >> app.yml
-            echo "        image: ${{ secrets.DOCKER_USERNAME }}/diploma:${{ github.run_number }}" >> app.yml
-            echo '        ports:' >> app.yml
-            echo '        - containerPort: 80' >> app.yml
-            echo '---' >> app.yml
-            echo 'apiVersion: v1' >> app.yml
-            echo 'kind: Service' >> app.yml
-            echo 'metadata:' >> app.yml
-            echo '  name: diploma-service' >> app.yml
-            echo 'spec:' >> app.yml
-            echo '  type: NodePort' >> app.yml
-            echo '  selector:' >> app.yml
-            echo '    app: diploma-app' >> app.yml
-            echo '  ports:' >> app.yml
-            echo '    - port: 80' >> app.yml
-            echo '      targetPort: 80' >> app.yml
-            echo '      nodePort: 30080' >> app.yml
-
+            curl -sSL https://raw.githubusercontent.com/Kot-off/DevOps-Net/main/app.yml -o app.yml
             kubectl apply -f app.yml
+            kubectl set image deployment/diploma-app web=${{ secrets.DOCKER_USERNAME }}/diploma:${{ github.run_number }}
             kubectl get pods,svc -o wide
