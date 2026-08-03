@@ -101,6 +101,7 @@ jobs:
           port: ${{ secrets.SSH_PORT }}
           script_stop: true
           script: |
+            export PATH=$PATH:/usr/local/bin:/usr/bin:/snap/bin
             curl -sSL https://raw.githubusercontent.com/Kot-off/DevOps-Net/main/app.yml -o app.yml
             kubectl apply -f app.yml
             kubectl set image deployment/diploma-app web=${{ secrets.DOCKER_USERNAME }}/diploma:${{ github.run_number }}
