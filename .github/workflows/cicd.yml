@@ -11,7 +11,25 @@ env:
   TF_VAR_folder_id: ${{ secrets.YC_FOLDER_ID }}
 
 jobs:
+  terraform:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+
+      - name: Terraform Init & Apply
+        run: |
+          cd devops-diplom-yandexcloud/terraform
+          echo '${{ secrets.YC_SA_JSON }}' > key.json
+          terraform init
+          terraform apply -auto-approve
+          rm key.json
+
   build:
+    needs: terraform
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
