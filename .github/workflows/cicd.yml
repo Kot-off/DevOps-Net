@@ -36,8 +36,39 @@ jobs:
           terraform apply -auto-approve
           rm key.json
 
-  build:
+  kubespray:
     needs: terraform
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: Install Kubespray requirements
+        run: |
+          if [ -f devops-diplom-yandexcloud/kubespray/requirements.txt ]; then
+            pip install -r devops-diplom-yandexcloud/kubespray/requirements.txt
+          else
+            pip install ansible
+          fi
+
+      - name: Set up SSH Key
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+
+      - name: Run Kubespray Playbook
+        run: |
+          cd devops-diplom-yandexcloud/kubespray
+          ansible-playbook -i inventory/my-k8s-cluster/hosts.yml cluster.yml -b --private-key ~/.ssh/id_rsa -u ubuntu -e "ansible_ssh_common_args='-o StrictHostKeyChecking=no'"
+
+  build:
+    needs: kubespray
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -109,9 +140,15 @@ jobs:
               KUBECTL_BIN="./kubectl"
             fi
 
-            export KUBECONFIG=/etc/kubernetes/admin.conf
+            if [ -f "$HOME/.kube/config" ]; then
+              export KUBECONFIG=$HOME/.kube/config
+            elif [ -f "/etc/kubernetes/admin.conf" ]; then
+              export KUBECONFIG=/etc/kubernetes/admin.conf
+            elif [ -f "/etc/rancher/k3s/k3s.yaml" ]; then
+              export KUBECONFIG=/etc/rancher/k3s/k3s.yaml
+            fi
 
             curl -sSL https://raw.githubusercontent.com/Kot-off/DevOps-Net/main/devops-diplom-yandexcloud/k8s/app.yml -o app.yml
-            sudo $KUBECTL_BIN --kubeconfig=/etc/kubernetes/admin.conf apply -f app.yml
-            sudo $KUBECTL_BIN --kubeconfig=/etc/kubernetes/admin.conf set image deployment/diploma-app web=${{ secrets.DOCKER_USERNAME }}/diploma:${{ github.run_number }}
-            sudo $KUBECTL_BIN --kubeconfig=/etc/kubernetes/admin.conf get pods,svc -o wide
+            $KUBECTL_BIN apply -f app.yml
+            $KUBECTL_BIN set image deployment/diploma-app web=${{ secrets.DOCKER_USERNAME }}/diploma:${{ github.run_number }}
+            $KUBECTL_BIN get pods,svc -o wide
