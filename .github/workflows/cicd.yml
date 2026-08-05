@@ -36,39 +36,8 @@ jobs:
           terraform apply -auto-approve
           rm key.json
 
-  kubespray:
-    needs: terraform
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.10'
-
-      - name: Install Kubespray requirements
-        run: |
-          if [ -f devops-diplom-yandexcloud/kubespray/requirements.txt ]; then
-            pip install -r devops-diplom-yandexcloud/kubespray/requirements.txt
-          else
-            pip install ansible
-          fi
-
-      - name: Set up SSH Key
-        run: |
-          mkdir -p ~/.ssh
-          echo "${{ secrets.SSH_KEY }}" > ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa
-
-      - name: Run Kubespray Playbook
-        run: |
-          cd devops-diplom-yandexcloud/kubespray
-          ansible-playbook -i inventory/my-k8s-cluster/hosts.yml cluster.yml -b --private-key ~/.ssh/id_rsa -u ubuntu -e "ansible_ssh_common_args='-o StrictHostKeyChecking=no'"
-
   build:
-    needs: kubespray
+    needs: terraform
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -132,23 +101,9 @@ jobs:
           port: ${{ secrets.SSH_PORT }}
           script_stop: true
           script: |
-            KUBECTL_BIN=$(which kubectl 2>/dev/null || find /usr /usr/local /snap /home /root -name kubectl 2>/dev/null | head -n 1)
-            
-            if [ -z "$KUBECTL_BIN" ]; then
-              curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
-              chmod +x kubectl
-              KUBECTL_BIN="./kubectl"
-            fi
-
-            if [ -f "$HOME/.kube/config" ]; then
-              export KUBECONFIG=$HOME/.kube/config
-            elif [ -f "/etc/kubernetes/admin.conf" ]; then
-              export KUBECONFIG=/etc/kubernetes/admin.conf
-            elif [ -f "/etc/rancher/k3s/k3s.yaml" ]; then
-              export KUBECONFIG=/etc/rancher/k3s/k3s.yaml
-            fi
+            export KUBECONFIG=$HOME/.kube/config
 
             curl -sSL https://raw.githubusercontent.com/Kot-off/DevOps-Net/main/devops-diplom-yandexcloud/k8s/app.yml -o app.yml
-            $KUBECTL_BIN apply -f app.yml
-            $KUBECTL_BIN set image deployment/diploma-app web=${{ secrets.DOCKER_USERNAME }}/diploma:${{ github.run_number }}
-            $KUBECTL_BIN get pods,svc -o wide
+            kubectl apply -f app.yml
+            kubectl set image deployment/diploma-app web=${{ secrets.DOCKER_USERNAME }}/diploma:${{ github.run_number }}
+            kubectl get pods,svc -o wide
