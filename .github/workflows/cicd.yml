@@ -101,8 +101,26 @@ jobs:
           port: ${{ secrets.SSH_PORT }}
           script_stop: true
           script: |
-            export PATH=$PATH:/usr/local/bin:/usr/bin:/snap/bin
+            # Ищем где лежит kubectl или microk8s
+            KUBECTL_BIN=$(which kubectl 2>/dev/null || find /usr /usr/local /snap /home /root -name kubectl 2>/dev/null | head -n 1)
+            
+            if [ -z "$KUBECTL_BIN" ]; then
+              echo "kubectl не найден на ВМ. Пробуем скачать локально..."
+              curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+              chmod +x kubectl
+              KUBECTL_BIN="./kubectl"
+            fi
+
+            echo "Используем kubectl: $KUBECTL_BIN"
+
+            # Указываем KUBECONFIG, если он лежит в стандартном месте
+            if [ -f "$HOME/.kube/config" ]; then
+              export KUBECONFIG=$HOME/.kube/config
+            elif [ -f "/etc/kubernetes/admin.conf" ]; then
+              export KUBECONFIG=/etc/kubernetes/admin.conf
+            fi
+
             curl -sSL https://raw.githubusercontent.com/Kot-off/DevOps-Net/main/app.yml -o app.yml
-            kubectl apply -f app.yml
-            kubectl set image deployment/diploma-app web=${{ secrets.DOCKER_USERNAME }}/diploma:${{ github.run_number }}
-            kubectl get pods,svc -o wide
+            $KUBECTL_BIN apply -f app.yml
+            $KUBECTL_BIN set image deployment/diploma-app web=${{ secrets.DOCKER_USERNAME }}/diploma:${{ github.run_number }}
+            $KUBECTL_BIN get pods,svc -o wide
