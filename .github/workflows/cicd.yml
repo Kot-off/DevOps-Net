@@ -109,15 +109,9 @@ jobs:
               KUBECTL_BIN="./kubectl"
             fi
 
-            if [ -f "$HOME/.kube/config" ]; then
-              export KUBECONFIG=$HOME/.kube/config
-            elif [ -f "/etc/kubernetes/admin.conf" ]; then
-              export KUBECONFIG=/etc/kubernetes/admin.conf
-            elif [ -f "/etc/rancher/k3s/k3s.yaml" ]; then
-              export KUBECONFIG=/etc/rancher/k3s/k3s.yaml
-            fi
+            export KUBECONFIG=/etc/kubernetes/admin.conf
 
             curl -sSL https://raw.githubusercontent.com/Kot-off/DevOps-Net/main/devops-diplom-yandexcloud/k8s/app.yml -o app.yml
-            $KUBECTL_BIN apply -f app.yml
-            $KUBECTL_BIN set image deployment/diploma-app web=${{ secrets.DOCKER_USERNAME }}/diploma:${{ github.run_number }}
-            $KUBECTL_BIN get pods,svc -o wide
+            sudo $KUBECTL_BIN --kubeconfig=/etc/kubernetes/admin.conf apply -f app.yml
+            sudo $KUBECTL_BIN --kubeconfig=/etc/kubernetes/admin.conf set image deployment/diploma-app web=${{ secrets.DOCKER_USERNAME }}/diploma:${{ github.run_number }}
+            sudo $KUBECTL_BIN --kubeconfig=/etc/kubernetes/admin.conf get pods,svc -o wide
