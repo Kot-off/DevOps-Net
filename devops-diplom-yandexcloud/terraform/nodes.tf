@@ -27,8 +27,9 @@ resource "yandex_compute_instance_group" "k8s-node-group" {
     }
 
     network_interface {
-      subnet_ids = toset(values(local.k8s.subnet_ids))
-      nat        = true
+      subnet_ids         = toset(values(local.k8s.subnet_ids))
+      nat                = true
+      security_group_ids = [yandex_vpc_security_group.k8s_sg.id] # <-- Добавлено сюда
     }
 
     metadata = {
